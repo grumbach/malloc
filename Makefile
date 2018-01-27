@@ -6,7 +6,7 @@
 #    By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/05/25 11:36:26 by agrumbac          #+#    #+#              #
-#    Updated: 2018/01/15 00:24:47 by agrumbac         ###   ########.fr        #
+#    Updated: 2018/01/26 23:47:59 by agrumbac         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,7 @@ NAME = libft_malloc.so
 
 HOSTLIB = libft_malloc_$(HOSTTYPE).so
 
-SRC = malloc.c free.c realloc.c
+SRC = malloc.c free.c realloc.c show_alloc.c
 
 SRCDIR = srcs/
 
@@ -98,11 +98,9 @@ fclean: clean
 	@/bin/rm -f ${NAME}
 	@/bin/rm -f ${HOSTLIB}
 
-test:
-	@${CC} ${INCL} ${LDFLAGS} -g -fsanitize=address ${LIB} -o ${NAME} \
-	$(addprefix ${SRCDIR}, ${SRC})
-
-build: ${OBJ}
+test: art libft/libft.a ${NAME}
+	@${CC} ${INCL} ${LIB} tests/test.c -o test
+	@./run.sh ./test
 
 re: fclean all
 
@@ -129,4 +127,4 @@ art:
 	@echo ${BR}"    malloc is EVIL, by using it, you agree to these TERMS"
 	@echo ${X}
 
-.PHONY: all clean fclean re test art
+.PHONY: all clean fclean re test art test
