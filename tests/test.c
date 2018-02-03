@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/15 05:01:34 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/01/27 02:14:08 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/02/03 03:30:03 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ int			main(int ac, char **av)
 {
 	void	*a = malloc(896);
 	ft_printf("oh! %p\n", a);
+
 	return (0);
 }
 

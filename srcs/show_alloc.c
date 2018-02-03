@@ -6,21 +6,32 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/23 07:09:36 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/01/27 09:58:09 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/01/27 11:39:54 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
-//
-// static void	show_alloc_large()
-// {
-//
-// }
+
+static void	show_alloc_large()
+{
+	t_malloc_chunk		*ptr;
+
+	if (!g_malloc_zones.large)
+		return ;
+	ft_printf("LARGE : %p\n", g_malloc_zones.large);
+	ptr = g_malloc_zones.large;
+	while (ptr)
+	{
+		ft_printf("%p - %p : %lu bytes\n", ptr + sizeof(t_malloc_chunk), \
+			ptr + sizeof(t_malloc_chunk) + ptr->size, ptr->size);
+		ptr = ptr->next;
+	}
+}
 
 void		show_alloc_mem(void)
 {
 	pthread_mutex_lock(&g_malloc_mutex);
-	// show_alloc_large();
+	show_alloc_large();
 	pthread_mutex_unlock(&g_malloc_mutex);
 }
 

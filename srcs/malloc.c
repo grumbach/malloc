@@ -6,48 +6,53 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 22:59:26 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/01/27 10:42:24 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/02/03 09:39:02 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 
-t_malloc_zones		g_malloc_zones = {{NULL, NULL}, {NULL, NULL}, NULL};
+t_malloc_zones		g_malloc_zones = {0, 0, 0};
 pthread_mutex_t		g_malloc_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 static void	*malloc_tiny(size_t size)
 {
 	ft_printf("hi from tiny : %lu\n", size);
-	return (void*)size;
+	return malloc_large(size);
 }
 
 static void	*malloc_small(size_t size)
 {
 	ft_printf("hi from small : %lu\n", size);
-	return (void*)size;
+	return malloc_large(size);
 }
 
 static void	*malloc_large(size_t size)
 {
-	t_malloc_chunck		*ptr;
+	t_malloc_chunk		*ptr;
 
-	ptr = mmap(0, size + sizeof(t_malloc_chunck), \
+	ptr = mmap(0, size + sizeof(t_malloc_chunk), \
 		PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
 	if (ptr == MAP_FAILED)
 		return (NULL);
-	*ptr = (t_malloc_chunck){size, g_malloc_zones.large};
+	*ptr = (t_malloc_chunk){g_malloc_zones.large, NULL, size};
+	if (g_malloc_zones.large)
+		g_malloc_zones.large->prev = ptr;
 	g_malloc_zones.large = ptr;
 
 	ft_printf("hi from large : %lu\n", size);//
 
-	return (ptr + sizeof(t_malloc_chunck));
+	return (ptr + sizeof(t_malloc_chunk));
 }
 
 /*
 **	malloc : 3 cases
-** "TINY" mallocs, from 1 to 127 - 16 bytes, will be stored in N bytes big zones.
-** "SMALL" mallocs, from 128 to 1023 - 16 bytes, will be stored in M bytes big zones.
-** "LARGE" mallocs, from 1024 - 16 bytes and more, will be stored out of zone,
+**	108 zones of 127- (+24) per TINY page (76 bytes wasted)
+**	125 zones of 1023- (+24) per SMALL page (197 bytes wasted)
+**
+** "TINY" mallocs, from 1 to 127 bytes, will be stored in N bytes big zones.
+** "SMALL" mallocs, from 128 to 1023 bytes, will be stored in M bytes big zones.
+** "LARGE" mallocs, from 1024 bytes and more, will be stored out of zone,
 **    which simply means with mmap(), they will be in a zone on their own.
 **	0b 111 11xx xxxx xxxx ==> large 2         & ... 1111 1100 0000 0000
 **	0b 000 0011 1xxx xxxx ==> small 1         &     0000 0011 1000 0000
@@ -64,7 +69,7 @@ void		*malloc(size_t size)
 		return (NULL);
 	pthread_mutex_lock(&g_malloc_mutex);
 
-	ptr = malloc_size[2](size);//TODO right size bitwise
+	ptr = malloc_size[MALLOC_SIZE(size)](size);
 
 	pthread_mutex_unlock(&g_malloc_mutex);
 	return (ptr);
