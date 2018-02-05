@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 22:59:21 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/02/03 09:37:40 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/02/05 14:41:29 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ static void			free_chunk(t_malloc_chunk *chunk)
 	const int			malloc_size = MALLOC_SIZE(chunk->size);
 	void				*mem = &g_malloc_zones + malloc_size;
 
+	ft_printf("trying to free %p of size %lu...", chunk, chunk->size);
 	if (malloc_size >> 1)
 		free_large(chunk);
 	free_tiny_small(chunk, malloc_size, mem);
@@ -74,17 +75,18 @@ static void			free_chunk(t_malloc_chunk *chunk)
 
 static int			out_of_bounds(const void *ptr)
 {
+	// TODO find a way to know if addr is on page!
 	// TODO check if in malloced zone
-	return (!ptr);
+	return (!!ptr);//always true
 }
 
 void			free(void *ptr)
 {
 	pthread_mutex_lock(&g_malloc_mutex);
-	if (out_of_bounds(ptr))
-		return ;
-	free_chunk(ptr - sizeof(t_malloc_chunk));
 
-	ft_printf("hello! from freeed\n");
+	ft_printf("%s[free]%s of %s[%p]%s", "\e[32m", "\e[0m", "\e[33m", ptr, "\e[0m");
+	if (!(!ptr || out_of_bounds(ptr)))
+		free_chunk(ptr - sizeof(t_malloc_chunk));
+	ft_printf("\n");
 	pthread_mutex_unlock(&g_malloc_mutex);
 }

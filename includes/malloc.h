@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 19:59:11 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/02/03 09:28:43 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/02/05 17:15:21 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,12 +40,15 @@
 **
 */
 
-# define MALLOC_PS		(4096)
+# define MALLOC_ZONE	(128)
 
+# define MALLOC_PS		(4096)
 # define MALLOC_PAGE(x)	((!!(x & 0xfff)) * MALLOC_PS)
 
-# define MALLOC_SIZE(x)	(((!!((x) & 0xfffffffffffffC00)) << 1) | \
-						(!!((x) & 0b1110000000) << (!!((x) & 0xfffffffffffffC00))))
+# define UP_1024(x)		((x) & 0xfffffffffffffC00)
+# define UP_128(x)		((x) & 0b1110000000)
+
+# define MALLOC_SIZE(x)	(((!!UP_1024(x)) << 1) | (!!UP_128(x) << (!!UP_1024(x))))
 
 typedef struct			s_malloc_chunk	t_malloc_chunk;
 typedef struct			s_malloc_mem	t_malloc_mem;
