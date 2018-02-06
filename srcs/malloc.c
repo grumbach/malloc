@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 22:59:26 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/02/05 16:57:56 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/02/06 23:06:51 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,8 @@ static inline void	*give_chunk(t_malloc_chunk **free, t_malloc_chunk **alloc, \
 ** creates a chained-list of free chunks with with size : size
 */
 
-static inline void	mem_init_zone(t_malloc_mem *mem, \
-					t_malloc_mem **malloc_zone, const size_t zone_size)
+static inline void	mem_init_zone(t_malloc_mem **malloc_zone, \
+					t_malloc_mem *mem, const size_t zone_size)
 {
 	t_malloc_chunk	*free_chunk = (void*)mem + sizeof(t_malloc_mem);
 	//set as first mem
@@ -65,8 +65,8 @@ static inline void	mem_init_zone(t_malloc_mem *mem, \
 	//string a beautiful chain of free chunks!
 	mem->free = free_chunk;
 	// while there is room for a chunk (t_malloc_chunk + zone_size) in the mem
-	while ((void*)free_chunk + sizeof(t_malloc_chunk) + zone_size < \
-		(void*)(zone_size * MALLOC_ZONE))
+	while ((void*)free_chunk + zone_size + sizeof(t_malloc_chunk) < \
+		(void*)mem + zone_size * MALLOC_ZONE)
 	{
 		//make new as next
 		free_chunk->next = (void*)free_chunk + sizeof(t_malloc_chunk) + zone_size;
@@ -79,19 +79,16 @@ static inline void	mem_init_zone(t_malloc_mem *mem, \
 	free_chunk->next = NULL;
 }
 
-static inline void	*malloc_tiny_small(t_malloc_mem **source, \
+static inline void	*malloc_tiny_small(t_malloc_mem **malloc_zone, \
 					const size_t zone_size, const size_t size)
 {
 	t_malloc_mem	*mem;
 
 	//check for mem
-	mem = *source;
-	ft_printf("{%p}", g_malloc_zones.tiny ? g_malloc_zones.tiny->free : (void*)42);//print all data struct in show_alloc_mem
-	ft_printf("[");//
-	t_malloc_mem *DEBUG_test = mem;//
+	mem = *malloc_zone;
+	// while no free memory in mem
 	while (mem && !mem->free)
 		mem = mem->next;
-	ft_printf("free mem %s%p%s] ", mem == DEBUG_test ? "\e[34m" : "", mem, "\e[0m");//
 	//if no memory or no free memory
 	if (!mem)
 	{
@@ -100,7 +97,7 @@ static inline void	*malloc_tiny_small(t_malloc_mem **source, \
 		ft_printf("%s[MMAP %p]%s", "\e[31m", mem, "\e[0m");//
 		if (mem == MAP_FAILED)
 			return (NULL);
-		mem_init_zone(mem, source, zone_size);
+		mem_init_zone(malloc_zone, mem, zone_size);
 	}
 	//mem available t_malloc_mem
 	return (give_chunk(&mem->free, &mem->alloc, size));

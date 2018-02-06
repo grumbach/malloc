@@ -6,19 +6,20 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/23 07:09:36 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/02/05 17:15:40 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/02/06 22:09:36 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 
-static inline void show_alloc_tiny_small(t_malloc_mem *mem, size_t *total)
+static inline void show_alloc_tiny_small(t_malloc_mem *mem, size_t *total, \
+						const char *size_str)
 {
 	t_malloc_chunk		*chunk;
 
 	while (mem)
 	{
-		ft_printf("LARGE : %p\n", mem);
+		ft_printf("%s : %p\n", size_str, mem);
 		chunk = mem->alloc;
 		while (chunk)
 		{
@@ -35,14 +36,14 @@ static void	show_alloc_tiny(size_t *total)
 {
 	if (!g_malloc_zones.tiny)
 		return ;
-	show_alloc_tiny_small(g_malloc_zones.tiny, total);
+	show_alloc_tiny_small(g_malloc_zones.tiny, total, "TINY");
 }
 
 static void	show_alloc_small(size_t *total)
 {
 	if (!g_malloc_zones.small)
 		return ;
-	show_alloc_tiny_small(g_malloc_zones.small, total);
+	show_alloc_tiny_small(g_malloc_zones.small, total, "SMALL");
 }
 
 static inline void	show_alloc_large(size_t *total)

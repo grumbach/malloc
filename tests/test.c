@@ -6,12 +6,12 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/15 05:01:34 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/02/05 17:19:14 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/02/06 22:10:44 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "libft.h"
-
+# include "malloc.h"
 # include <sys/mman.h>
 # include <pthread.h>
 # include <sys/resource.h>
@@ -20,9 +20,10 @@
 int			main(int ac, char **av)
 {
 	void	*a = malloc(896);
+	void	*b = malloc(8969);
 	ft_printf("oh! %p\n", a);
 
-	// show_alloc_mem();//TODO figure out how to link
+	show_alloc_mem();
 
 	return (0);
 }
