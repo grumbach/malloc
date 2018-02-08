@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/15 05:01:34 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/02/06 22:10:44 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/02/08 02:38:23 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,16 @@
 
 int			main(int ac, char **av)
 {
-	void	*a = malloc(896);
-	void	*b = malloc(8969);
-	ft_printf("oh! %p\n", a);
+	int		i;
+	char	*ptr;
 
-	show_alloc_mem();
-
+	while (i < 1024)
+	{
+		ptr = (char *)malloc(1024);
+		ptr[1023] = 42;
+		i++;
+	}
+	// show_alloc_mem();
 	return (0);
 }
 

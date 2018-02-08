@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 19:59:11 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/02/06 23:00:38 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/02/08 02:43:58 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,15 +40,36 @@
 **
 */
 
+/*
+** mapped_size == ZONE_(size) * MALLOC_ZONE
+** chunk_size  == ZONE_(size) + sizeof(t_malloc_chunk)
+*/
+# define ZONE_SMALL		(1024)
+# define ZONE_TINY		(128)
 # define MALLOC_ZONE	(128)
 
-# define MALLOC_PS		(4096)
-# define MALLOC_PAGE(x)	((!!(x & 0xfff)) * MALLOC_PS)
+/*
+** FREE_SIZE(MALLOC_SIZE(size))	returns zone size to munmap()
+*/
+# define FREE_SIZE(x)	(ZONE_TINY << (x * 3))
 
-# define UP1024(x)		((x) & 0xfffffffffffffC00)
-# define UP128(x)		((x) & 0b1110000000)
+/*
+** MALLOC_PAGE(size) returns new_size with
+**     (new_size > size)
+**     &&
+**     (new_size % MALLOC_PAGE_S == 0)
+*/
+# define MALLOC_PAGE_S	(4096)
+# define MALLOC_PAGE(x)	(x + (!!(x % MALLOC_PAGE_S) * \
+						(MALLOC_PAGE_S - x % MALLOC_PAGE_S)))
 
-# define MALLOC_SIZE(x)	(((!!UP1024(x)) << 1) | (!!UP128(x) << (!!UP1024(x))))
+/*
+** MALLOC_SIZE(size) returns
+**     (0) if size is TINY
+**     (1) if size is SMALL
+**     (2) if size is LARGE
+*/
+# define MALLOC_SIZE(x)	((x > ZONE_TINY) + (x > ZONE_SMALL))
 
 typedef struct			s_malloc_chunk	t_malloc_chunk;
 typedef struct			s_malloc_mem	t_malloc_mem;
@@ -81,6 +102,8 @@ extern pthread_mutex_t	g_malloc_mutex;
 /*
 ** malloc public
 */
+
+# define MALLOC_DEBUG_VERBOSE
 
 void					free(void *ptr);
 void					*malloc(size_t size);

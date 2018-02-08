@@ -6,7 +6,7 @@
 #    By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/05/25 11:36:26 by agrumbac          #+#    #+#              #
-#    Updated: 2018/02/06 22:07:36 by agrumbac         ###   ########.fr        #
+#    Updated: 2018/02/08 02:41:33 by agrumbac         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -101,6 +101,10 @@ fclean: clean
 test: art libft/libft.a ${NAME}
 	@${CC} ${INCL} ${LIB} tests/test.c -L. -lft_malloc -o test
 	@./run.sh ./test
+
+bench: art libft/libft.a ${NAME}
+	@${CC} ${INCL} ${LIB} tests/test.c -o test
+	@./run.sh /usr/bin/time -l ./test
 
 re: fclean all
 

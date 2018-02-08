@@ -6,11 +6,26 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 22:59:29 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/02/05 13:36:31 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/02/08 03:08:16 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
+
+void			*calloc(size_t count, size_t size)
+{
+	void		*ptr;
+
+	ptr = malloc(count * size);
+	if (ptr)
+		ft_bzero(ptr, count * size);
+	return (ptr);
+}
+
+void			*reallocf(void *ptr, size_t size)
+{
+
+}
 
 void			*realloc(void *ptr, size_t size)
 {
