@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 19:59:11 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/02/08 02:43:58 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/02/08 07:48:14 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@
 /*
 ** FREE_SIZE(MALLOC_SIZE(size))	returns zone size to munmap()
 */
-# define FREE_SIZE(x)	(ZONE_TINY << (x * 3))
+# define FREE_SIZE(x)	(ZONE_TINY << ((x) * 3))
 
 /*
 ** MALLOC_PAGE(size) returns new_size with
@@ -60,8 +60,8 @@
 **     (new_size % MALLOC_PAGE_S == 0)
 */
 # define MALLOC_PAGE_S	(4096)
-# define MALLOC_PAGE(x)	(x + (!!(x % MALLOC_PAGE_S) * \
-						(MALLOC_PAGE_S - x % MALLOC_PAGE_S)))
+# define MALLOC_PAGE(x)	((x) + (!!((x) % MALLOC_PAGE_S) * \
+						(MALLOC_PAGE_S - (x) % MALLOC_PAGE_S)))
 
 /*
 ** MALLOC_SIZE(size) returns
@@ -69,7 +69,7 @@
 **     (1) if size is SMALL
 **     (2) if size is LARGE
 */
-# define MALLOC_SIZE(x)	((x > ZONE_TINY) + (x > ZONE_SMALL))
+# define MALLOC_SIZE(x)	(((x) > ZONE_TINY) + ((x) > ZONE_SMALL))
 
 typedef struct			s_malloc_chunk	t_malloc_chunk;
 typedef struct			s_malloc_mem	t_malloc_mem;

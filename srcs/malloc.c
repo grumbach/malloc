@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 22:59:26 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/02/08 02:37:57 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/02/08 06:32:24 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,23 +123,28 @@ static void			*malloc_small(size_t size)
 
 static void			*malloc_large(size_t size)
 {
+	const size_t	msize = MALLOC_PAGE(size + sizeof(t_malloc_chunk));
 	t_malloc_chunk	*ptr;
 
 	#ifdef MALLOC_DEBUG_VERBOSE
 	ft_printf("[large] of %s%lu%s\t", "\e[33m", size, "\e[0m");//
 	#endif
-	ptr = mmap(0, MALLOC_PAGE(size + sizeof(t_malloc_chunk)), \
-		PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
+
+	ptr = mmap(0, msize, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
+
 	#ifdef MALLOC_DEBUG_VERBOSE
-	ft_printf("%s[MMAP %p]%s", "\e[31m", ptr, "\e[0m");//
+	ft_printf("%s[MMAP %p of %lu]%s", "\e[31m", ptr, msize, "\e[0m");//
 	#endif
+
 	if (ptr == MAP_FAILED)
 		return (NULL);
-	*ptr = (t_malloc_chunk){g_malloc_zones.large, NULL, size};
+	ptr->next = g_malloc_zones.large;
+	ptr->prev = NULL;
+	ptr->size = size;
 	if (g_malloc_zones.large)
 		g_malloc_zones.large->prev = ptr;
 	g_malloc_zones.large = ptr;
-	return (ptr + 1);//check this [] + ptr arythm
+	return ((void*)ptr + sizeof(t_malloc_chunk));
 }
 
 void				*malloc(size_t size)

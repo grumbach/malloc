@@ -6,31 +6,66 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/15 05:01:34 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/02/08 02:38:23 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/02/08 07:46:35 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "libft.h"
-# include "malloc.h"
-# include <sys/mman.h>
-# include <pthread.h>
-# include <sys/resource.h>
-# include <errno.h>
+// # include <sys/mman.h>
+// # include <pthread.h>
+// # include <sys/resource.h>
+// # include <errno.h>
 
-int			main(int ac, char **av)
+int      main()
 {
-	int		i;
-	char	*ptr;
+   int   i;
+   char  *addr;
 
-	while (i < 1024)
-	{
-		ptr = (char *)malloc(1024);
-		ptr[1023] = 42;
-		i++;
-	}
-	// show_alloc_mem();
-	return (0);
+   i = 0;
+   while (i < 999)
+   {
+      addr = (char*)malloc(1024);
+      addr[0] = 42;
+      i++;
+   }
+   return (0);
 }
+
+//
+// int			main(int ac, char **av)
+// {
+// 	int		i = 0;
+// 	char	*ptr;
+//
+// 	// ptr[0] = 42;
+// 	while (i < 1024)
+// 	{
+// 		// ptr = malloc(654);
+// 		// malloc(400);
+// 		// if (!ptr)
+// 		// 	ft_printf("NULL\n");
+// 		// ft_printf("A");
+// 		// ptr[41] = 42;
+// 		// ft_printf("B");
+// 		i++;
+// 	}
+// 	// while (i < 1024)
+// 	// {
+// 	// 	ptr = (char *)malloc(8169);
+// 	// 	ft_printf("{[%d]=", i);
+// 	// 	int w = 0;
+// 	// 	while (w < 8169)
+// 	// 	{
+// 	// 		ft_printf("%d.", w);
+// 	// 		ptr[w] = 42;
+// 	// 		w++;
+// 	// 	}
+// 	// 	ft_printf("}");
+// 	// 	i++;
+// 	// }
+// 	// show_alloc_mem();
+// 	return (0);
+// }
 
 // MUTEX TEST
 // pthread_mutex_t		mut = PTHREAD_MUTEX_INITIALIZER;
