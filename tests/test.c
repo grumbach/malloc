@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/15 05:01:34 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/02/08 07:46:35 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/02/08 08:59:32 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,12 @@ int      main()
    int   i;
    char  *addr;
 
-   i = 0;
-   while (i < 999)
+   i = 1;
+   while (i < 1200)
    {
-      addr = (char*)malloc(1024);
-      addr[0] = 42;
+      addr = (char*)malloc(i);
+      addr[i - 1] = 42;
+      free(addr);
       i++;
    }
    return (0);
