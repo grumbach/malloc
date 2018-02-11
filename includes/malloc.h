@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 19:59:11 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/02/08 08:50:41 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/02/11 23:15:16 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,14 +44,9 @@
 ** mapped_size == ZONE_(size) * MALLOC_ZONE
 ** chunk_size  == ZONE_(size) + sizeof(t_malloc_chunk)
 */
-# define ZONE_SMALL		(1024)
-# define ZONE_TINY		(128)
+# define ZONE_SMALL		(4096)
+# define ZONE_TINY		(1024)
 # define MALLOC_ZONE	(128)
-
-/*
-** FREE_SIZE(MALLOC_SIZE(size))	returns zone size to munmap()
-*/
-# define FREE_SIZE(x)	(ZONE_TINY << ((x) * 3))
 
 /*
 ** MALLOC_PAGE(size) returns new_size with

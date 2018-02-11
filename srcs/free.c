@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 22:59:21 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/02/09 21:42:21 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/02/11 23:13:59 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,10 +41,10 @@ static inline void	free_tiny_small(t_malloc_chunk *chunk, \
 
 		#ifdef MALLOC_DEBUG_VERBOSE
 		ft_printf("%s[MUNMAP %p of %lu]%s", "\e[31m", mem, \
-			MALLOC_ZONE * FREE_SIZE(malloc_size), "\e[0m");//
+			MALLOC_ZONE * (malloc_size ? ZONE_SMALL : ZONE_TINY), "\e[0m");//
 		#endif
 		// unmap tiny small
-		munmap(mem, MALLOC_ZONE * FREE_SIZE(malloc_size));
+		munmap(mem, MALLOC_ZONE * (malloc_size ? ZONE_SMALL : ZONE_TINY));
 	}
 }
 
@@ -72,11 +72,12 @@ static inline void	free_large(t_malloc_chunk *chunk)
 static void			free_chunk(t_malloc_chunk *chunk)
 {
 	const int			malloc_size = MALLOC_SIZE(chunk->size);
-	void				*mem = &g_malloc_zones + malloc_size;
+	void				*mem[2] = {g_malloc_zones.tiny, g_malloc_zones.small};
 
-	if (malloc_size >> 1)
+	if (malloc_size == 2)
 		free_large(chunk);
-	free_tiny_small(chunk, malloc_size, mem);
+	else
+		free_tiny_small(chunk, malloc_size, mem[malloc_size]);
 }
 
 static inline int	is_not_in_chunks(const void *ptr, t_malloc_chunk *chunk)
