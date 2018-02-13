@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/23 07:09:36 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/02/06 23:59:57 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/02/13 00:51:56 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,9 @@ static inline void show_alloc_tiny_small(t_malloc_mem *mem, size_t *total, \
 		chunk = mem->alloc;
 		while (chunk)
 		{
-			ft_printf("%p - %p : %lu bytes\n", chunk + sizeof(t_malloc_chunk), \
-				chunk + sizeof(t_malloc_chunk) + chunk->size, chunk->size);
+			ft_printf("%p - %p : %lu bytes\n", (void *)chunk + \
+			sizeof(t_malloc_chunk), (void *)chunk + sizeof(t_malloc_chunk) + \
+			chunk->size, chunk->size);
 			*total += chunk->size;
 			chunk = chunk->next;
 		}
@@ -56,8 +57,9 @@ static inline void	show_alloc_large(size_t *total)
 	chunk = g_malloc_zones.large;
 	while (chunk)
 	{
-		ft_printf("%p - %p : %lu bytes\n", chunk + sizeof(t_malloc_chunk), \
-			chunk + sizeof(t_malloc_chunk) + chunk->size, chunk->size);
+		ft_printf("%p - %p : %lu bytes\n", (void *) chunk + \
+		sizeof(t_malloc_chunk), (void *)chunk + sizeof(t_malloc_chunk) + \
+		chunk->size, chunk->size);
 		*total += chunk->size;
 		chunk = chunk->next;
 	}

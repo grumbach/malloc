@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 19:59:11 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/02/11 23:15:16 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/02/13 00:28:17 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 **
 ** (2) LARGE :
 ** chained list of t_malloc_chunk
-**           _______________       _______________
+**           ______________       ______________
 ** NULL <-> |t_malloc_chunk| <-> |t_malloc_chunk| <-> ... <-> NULL
 **
 ** (1) SMALL and (0) TINY :
@@ -33,9 +33,9 @@
 **     - a list of alloced t_malloc_chunk
 **           ____________
 ** NULL <-> |t_malloc_mem| <->  ... <-> NULL
-**            |             _______________       _______________
+**            |             ______________       ______________
 **            |-> NULL <-> |t_malloc_chunk| <-> |t_malloc_chunk| <-> ...
-**            |             _______________       _______________
+**            |             ______________       ______________
 **            |-> NULL <-> |t_malloc_chunk| <-> |t_malloc_chunk| <-> ...
 **
 */
@@ -44,8 +44,8 @@
 ** mapped_size == ZONE_(size) * MALLOC_ZONE
 ** chunk_size  == ZONE_(size) + sizeof(t_malloc_chunk)
 */
-# define ZONE_SMALL		(4096)
-# define ZONE_TINY		(1024)
+# define ZONE_SMALL		(1024)
+# define ZONE_TINY		(128)
 # define MALLOC_ZONE	(128)
 
 /*
@@ -64,6 +64,9 @@
 **     (1) if size is SMALL
 **     (2) if size is LARGE
 */
+# define MALLOC_TINY	0
+# define MALLOC_SMALL	1
+# define MALLOC_LARGE	2
 # define MALLOC_SIZE(x)	(((x) > ZONE_TINY) + ((x) > ZONE_SMALL))
 
 typedef struct			s_malloc_chunk	t_malloc_chunk;
@@ -94,6 +97,8 @@ typedef struct			s_malloc_zones
 extern t_malloc_zones	g_malloc_zones;
 extern pthread_mutex_t	g_malloc_mutex;
 
+int						malloc_out_of_zones(const void *ptr);
+
 /*
 ** malloc public
 */
@@ -102,7 +107,9 @@ extern pthread_mutex_t	g_malloc_mutex;
 
 void					free(void *ptr);
 void					*malloc(size_t size);
+void					*calloc(size_t count, size_t size);
 void					*realloc(void *ptr, size_t size);
+void					*reallocf(void *ptr, size_t size);
 
 void					show_alloc_mem();
 void					show_alloc_mem_hex(void *ptr);

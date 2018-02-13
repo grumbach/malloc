@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 22:59:21 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/02/11 23:13:59 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/02/13 01:17:51 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,8 @@ static inline void	free_tiny_small(t_malloc_chunk *chunk, \
 
 static inline void	free_large(t_malloc_chunk *chunk)
 {
+	const size_t	msize = MALLOC_PAGE(chunk->size + sizeof(t_malloc_chunk));
+
 	// remove from alloc list
 	if (chunk->prev)
 		chunk->prev->next = chunk->next;
@@ -59,14 +61,11 @@ static inline void	free_large(t_malloc_chunk *chunk)
 		chunk->next->prev = chunk->prev;
 
 	#ifdef MALLOC_DEBUG_VERBOSE
-	ft_printf("%s[MUNMAP %p of %lu]%s", "\e[31m", chunk, chunk->size + \
-		sizeof(t_malloc_chunk) + \
-		MALLOC_PAGE(chunk->size + sizeof(t_malloc_chunk)), "\e[0m");//
+	ft_printf("%s[MUNMAP %p of %lu]%s", "\e[31m", chunk, msize, "\e[0m");//
 	#endif
 
 	// unmap large
-	munmap(chunk, chunk->size + sizeof(t_malloc_chunk) + \
-		MALLOC_PAGE(chunk->size + sizeof(t_malloc_chunk)));
+	munmap(chunk, msize);
 }
 
 static void			free_chunk(t_malloc_chunk *chunk)
@@ -74,7 +73,7 @@ static void			free_chunk(t_malloc_chunk *chunk)
 	const int			malloc_size = MALLOC_SIZE(chunk->size);
 	void				*mem[2] = {g_malloc_zones.tiny, g_malloc_zones.small};
 
-	if (malloc_size == 2)
+	if (malloc_size == MALLOC_LARGE)
 		free_large(chunk);
 	else
 		free_tiny_small(chunk, malloc_size, mem[malloc_size]);
@@ -97,7 +96,7 @@ static inline int	is_not_in_chunks(const void *ptr, t_malloc_chunk *chunk)
 	return (2);//continue
 }
 
-static int			out_of_zones(const void *ptr)
+int					malloc_out_of_zones(const void *ptr)
 {
 	const size_t	zone_sizes[3] = {ZONE_TINY, ZONE_SMALL, 0};
 	t_malloc_mem	*mem;
@@ -125,15 +124,15 @@ static int			out_of_zones(const void *ptr)
 	return (1);
 }
 
-void			free(void *ptr)
+void				free(void *ptr)
 {
 	pthread_mutex_lock(&g_malloc_mutex);
 
 	#ifdef MALLOC_DEBUG_VERBOSE
 	ft_printf("%s[free]%s of %s[%p]%s", "\e[32m", "\e[0m", "\e[33m", ptr, "\e[0m");
-	ft_printf("%s", out_of_zones(ptr) ? "\e[31m""[INVALID ADDR]""\e[0m" : "");
+	ft_printf("%s", malloc_out_of_zones(ptr) ? "\e[31m""[INVALID ADDR]""\e[0m" : "");
 	#endif
-	if (!(!ptr || out_of_zones(ptr)))
+	if (!(!ptr || malloc_out_of_zones(ptr)))
 		free_chunk(ptr - sizeof(t_malloc_chunk));
 	#ifdef MALLOC_DEBUG_VERBOSE
 	ft_printf("\n");

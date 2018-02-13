@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/15 05:01:34 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/02/08 08:59:32 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/02/13 04:55:33 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,17 @@ int      main()
    int   i;
    char  *addr;
 
+   //
+   // malloc(12);
+   // malloc(3000);
+   // malloc(12000);
    i = 1;
-   while (i < 1200)
+   while (i < 10000)
    {
       addr = (char*)malloc(i);
+      addr = reallocf(addr, i + 1);
       addr[i - 1] = 42;
+      // show_alloc_mem();
       free(addr);
       i++;
    }
