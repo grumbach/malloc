@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/15 05:01:34 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/02/13 16:23:45 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/02/15 07:56:22 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,17 +18,9 @@
 
 int      main()
 {
-    struct rlimit	rlp;
-
-    if (getrlimit(RLIMIT_DATA, &rlp))
-    {
-        ft_printf("fail\n");
-        // return (0);
-    }
-        ft_printf("{%llu}\n", rlp.rlim_cur);
-    // return (rlp.rlim_cur);
-    // char *x = malloc(-1);
-    // free(x);
+    void * ptr=malloc(5565);
+    show_alloc_mem();
+    free(ptr);
     return (0);
 }
 
@@ -129,6 +121,14 @@ int      main()
 // 		return printf("rlim fail %s\n", strerror(errno));
 // 	ft_printf("rlimit %lb\n", rlp);
 //
+// struct rlimit	rlp;
+//
+// if (getrlimit(RLIMIT_DATA, &rlp))
+// {
+//     ft_printf("fail\n");
+//     // return (0);
+// }
+//     ft_printf("{%llu}\n", rlp.rlim_cur);
 //
 // 	ft_memset(var, 42, USED_SIZE);
 // 	ft_memset(var2, 42, USED_SIZE);

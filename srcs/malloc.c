@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 22:59:26 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/02/15 06:31:32 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/02/15 07:17:58 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,9 +94,7 @@ static inline void	*malloc_tiny_small(t_malloc_mem **malloc_zone, \
 	{
 		mem = mmap(0, zone_size * MALLOC_ZONE, \
 			PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
-		#ifdef MALLOC_DEBUG_VERBOSE
-		ft_printf("%s[MMAP %p]%s", "\e[31m", mem, "\e[0m");//
-		#endif
+		MALLOC_ULTRA_VERBOSE("%s[MMAP %p]%s", "\e[31m", mem, "\e[0m");
 		if (mem == MAP_FAILED)
 			return (NULL);
 		mem_init_zone(malloc_zone, mem, zone_size);
@@ -107,17 +105,13 @@ static inline void	*malloc_tiny_small(t_malloc_mem **malloc_zone, \
 
 static void			*malloc_tiny(size_t size)
 {
-	#ifdef MALLOC_DEBUG_VERBOSE
-	ft_printf("[tiny] of %s%lu%s\t", "\e[33m", size, "\e[0m");//
-	#endif
+	MALLOC_ULTRA_VERBOSE("[tiny] of %s%lu%s\t", "\e[33m", size, "\e[0m");
 	return (malloc_tiny_small(&g_malloc_zones.tiny, ZONE_TINY, size));
 }
 
 static void			*malloc_small(size_t size)
 {
-	#ifdef MALLOC_DEBUG_VERBOSE
-	ft_printf("[small] of %s%lu%s\t", "\e[33m", size, "\e[0m");//
-	#endif
+	MALLOC_ULTRA_VERBOSE("[small] of %s%lu%s\t", "\e[33m", size, "\e[0m");
 	return (malloc_tiny_small(&g_malloc_zones.small, ZONE_SMALL, size));
 }
 
@@ -126,15 +120,11 @@ static void			*malloc_large(size_t size)
 	const size_t	msize = MALLOC_PAGE(size + sizeof(t_malloc_chunk));
 	t_malloc_chunk	*ptr;
 
-	#ifdef MALLOC_DEBUG_VERBOSE
-	ft_printf("[large] of %s%lu%s\t", "\e[33m", size, "\e[0m");//
-	#endif
+	MALLOC_ULTRA_VERBOSE("[large] of %s%lu%s\t", "\e[33m", size, "\e[0m");
 
 	ptr = mmap(0, msize, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
 
-	#ifdef MALLOC_DEBUG_VERBOSE
-	ft_printf("%s[MMAP %p of %lu]%s", "\e[31m", ptr, msize, "\e[0m");//
-	#endif
+	MALLOC_ULTRA_VERBOSE("%s[MMAP %p of %lu]%s", "\e[31m", ptr, msize, "\e[0m");
 
 	if (ptr == MAP_FAILED)
 		return (NULL);
@@ -158,9 +148,7 @@ void				*malloc(size_t size)
 	pthread_mutex_lock(&g_malloc_mutex);
 
 	ptr = malloc_size[MALLOC_SIZE(size)](size);
-	#ifdef MALLOC_DEBUG_VERBOSE
-	ft_printf(" %s[%p]%s\n", "\e[33m", ptr, "\e[0m");//
-	#endif
+	MALLOC_ULTRA_VERBOSE(" %s[%p]%s\n", "\e[33m", ptr, "\e[0m");
 	pthread_mutex_unlock(&g_malloc_mutex);
 
 
@@ -171,7 +159,7 @@ void				*malloc(size_t size)
 		((char*)ptr)[i] = 42;
 		i++;
 	}
-	ft_printf("VALID!");//
+	ft_printf("VALID!\n");//
 //	TESTING
 	return (ptr);
 }

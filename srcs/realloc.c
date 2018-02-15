@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 22:59:29 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/02/15 06:29:49 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/02/15 07:50:37 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,46 +25,43 @@ static inline int	is_reallocable(t_malloc_chunk *chunk, size_t size)
 			MALLOC_PAGE(chunk->size + sizeof(t_malloc_chunk)));
 }
 
-void				*realloc(void *ptr, size_t size)
+static inline void	*bitter_realloc(void *ptr, size_t size)
 {
 	void			*new;
+	size_t			old_size;
 
-	#ifdef MALLOC_DEBUG_VERBOSE
-	ft_printf("[realloc] of %s%lu%s at %s[%p]%s", "\e[33m", size, \
+	MALLOC_ULTRA_VERBOSE("%s[BITTER]%s\n", "\e[35m", "\e[0m");
+	new = malloc(size);
+	if (!new)
+		return (NULL);
+	old_size = ((t_malloc_chunk *)(ptr - sizeof(t_malloc_chunk)))->size;
+	ft_memcpy(new, ptr, old_size);
+	free(ptr);
+	return (new);
+}
+
+void				*realloc(void *ptr, size_t size)
+{
+	MALLOC_ULTRA_VERBOSE("[realloc] of %s%lu%s at %s[%p]%s", "\e[33m", size, \
 		"\e[0m", "\e[33m", ptr, "\e[0m");
-	#endif
-
 	if (!ptr || !size)
 		return (malloc(size));
 	pthread_mutex_lock(&g_malloc_mutex);
 	if (malloc_out_of_zones(ptr))
 	{
-		#ifdef MALLOC_DEBUG_VERBOSE
-		ft_printf("%s", malloc_out_of_zones(ptr) ? "\e[31m""[INVALID ADDR]""\e[0m" : "");
-		#endif
+		MALLOC_ULTRA_VERBOSE("\e[31m""[INVALID ADDR]""\e[0m");
 		pthread_mutex_unlock(&g_malloc_mutex);
 		return (NULL);
 	}
 	if (is_reallocable(ptr - sizeof(t_malloc_chunk), size))
 	{
-		#ifdef MALLOC_DEBUG_VERBOSE
-		ft_printf("%s[SWEET]%s\n", "\e[35m", "\e[0m");
-		#endif
-
+		MALLOC_ULTRA_VERBOSE("%s[SWEET]%s\n", "\e[35m", "\e[0m");
 		((t_malloc_chunk *)(ptr - sizeof(t_malloc_chunk)))->size = size;
 		pthread_mutex_unlock(&g_malloc_mutex);
 		return (ptr);
 	}
-	#ifdef MALLOC_DEBUG_VERBOSE
-	ft_printf("%s[BITTER]%s\n", "\e[35m", "\e[0m");
-	#endif
 	pthread_mutex_unlock(&g_malloc_mutex);
-	new = malloc(size);
-	if (!new)
-		return (NULL);
-	ft_memcpy(new, ptr, ((t_malloc_chunk *)(ptr - sizeof(t_malloc_chunk)))->size);
-	free(ptr);
-	return (new);
+	return (bitter_realloc(ptr, size));
 }
 
 void				*reallocf(void *ptr, size_t size)

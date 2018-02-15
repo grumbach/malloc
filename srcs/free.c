@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 22:59:21 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/02/15 06:30:00 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/02/15 07:24:54 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,8 @@ static inline void	free_tiny_small(t_malloc_chunk *chunk, \
 		if (mem->next)
 			mem->next->prev = mem->prev;
 
-		#ifdef MALLOC_DEBUG_VERBOSE
-		ft_printf("%s[MUNMAP %p of %lu]%s", "\e[31m", mem, \
-			MALLOC_ZONE * (malloc_size ? ZONE_SMALL : ZONE_TINY), "\e[0m");//
-		#endif
+		MALLOC_ULTRA_VERBOSE("%s[MUNMAP %p of %lu]%s", "\e[31m", mem, \
+			MALLOC_ZONE * (malloc_size ? ZONE_SMALL : ZONE_TINY), "\e[0m");
 		// unmap tiny small
 		munmap(mem, MALLOC_ZONE * (malloc_size ? ZONE_SMALL : ZONE_TINY));
 	}
@@ -60,9 +58,8 @@ static inline void	free_large(t_malloc_chunk *chunk)
 	if (chunk->next)
 		chunk->next->prev = chunk->prev;
 
-	#ifdef MALLOC_DEBUG_VERBOSE
-	ft_printf("%s[MUNMAP %p of %lu]%s", "\e[31m", chunk, msize, "\e[0m");//
-	#endif
+	MALLOC_ULTRA_VERBOSE("%s[MUNMAP %p of %lu]%s", "\e[31m", chunk, msize, \
+		"\e[0m");
 
 	// unmap large
 	munmap(chunk, msize);
@@ -128,14 +125,11 @@ void				free(void *ptr)
 {
 	pthread_mutex_lock(&g_malloc_mutex);
 
-	#ifdef MALLOC_DEBUG_VERBOSE
-	ft_printf("%s[free]%s of %s[%p]%s", "\e[32m", "\e[0m", "\e[33m", ptr, "\e[0m");
-	ft_printf("%s", malloc_out_of_zones(ptr) ? "\e[31m""[INVALID ADDR]""\e[0m" : "");
-	#endif
+	MALLOC_ULTRA_VERBOSE("%s[free]%s of %s[%p]%s%s", "\e[32m", "\e[0m", \
+		"\e[33m", ptr, "\e[0m", \
+		malloc_out_of_zones(ptr) ? "\e[31m""[INVALID ADDR]""\e[0m" : "");
 	if (!(!ptr || malloc_out_of_zones(ptr)))
 		free_chunk(ptr - sizeof(t_malloc_chunk));
-	#ifdef MALLOC_DEBUG_VERBOSE
-	ft_printf("\n");
-	#endif
+	MALLOC_ULTRA_VERBOSE("\n");
 	pthread_mutex_unlock(&g_malloc_mutex);
 }

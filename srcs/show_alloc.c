@@ -6,16 +6,16 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/23 07:09:36 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/02/13 00:51:56 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/02/15 07:55:49 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 
-static inline void show_alloc_tiny_small(t_malloc_mem *mem, size_t *total, \
+static inline void	show_alloc_tiny_small(t_malloc_mem *mem, size_t *total, \
 						const char *size_str)
 {
-	t_malloc_chunk		*chunk;
+	t_malloc_chunk	*chunk;
 
 	while (mem)
 	{
@@ -33,31 +33,15 @@ static inline void show_alloc_tiny_small(t_malloc_mem *mem, size_t *total, \
 	}
 }
 
-static void	show_alloc_tiny(size_t *total)
-{
-	if (!g_malloc_zones.tiny)
-		return ;
-	show_alloc_tiny_small(g_malloc_zones.tiny, total, "TINY");
-}
-
-static void	show_alloc_small(size_t *total)
-{
-	if (!g_malloc_zones.small)
-		return ;
-	show_alloc_tiny_small(g_malloc_zones.small, total, "SMALL");
-}
-
 static inline void	show_alloc_large(size_t *total)
 {
-	t_malloc_chunk		*chunk;
+	t_malloc_chunk	*chunk;
 
-	if (!g_malloc_zones.large)
-		return ;
 	ft_printf("LARGE : %p\n", g_malloc_zones.large);
 	chunk = g_malloc_zones.large;
 	while (chunk)
 	{
-		ft_printf("%p - %p : %lu bytes\n", (void *) chunk + \
+		ft_printf("%p - %p : %lu bytes\n", (void *)chunk + \
 		sizeof(t_malloc_chunk), (void *)chunk + sizeof(t_malloc_chunk) + \
 		chunk->size, chunk->size);
 		*total += chunk->size;
@@ -65,20 +49,23 @@ static inline void	show_alloc_large(size_t *total)
 	}
 }
 
-void		show_alloc_mem()
+void				show_alloc_mem(void)
 {
-	size_t	total;
+	size_t			total;
 
-	pthread_mutex_lock(&g_malloc_mutex);
 	total = 0;
-	show_alloc_tiny(&total);
-	show_alloc_small(&total);
-	show_alloc_large(&total);
+	pthread_mutex_lock(&g_malloc_mutex);
+	if (g_malloc_zones.tiny)
+		show_alloc_tiny_small(g_malloc_zones.tiny, &total, "TINY");
+	if (g_malloc_zones.small)
+		show_alloc_tiny_small(g_malloc_zones.small, &total, "SMALL");
+	if (g_malloc_zones.large)
+		show_alloc_large(&total);
 	ft_printf("Total : %lu bytes\n", total);
 	pthread_mutex_unlock(&g_malloc_mutex);
 }
 
-void		show_alloc_mem_hex(void *ptr)
+void				show_alloc_mem_hex(void *ptr)
 {
 	(void)ptr;
 	ft_printf("hello from show_alloc");
