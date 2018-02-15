@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 19:59:11 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/02/13 00:28:17 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/02/15 06:32:00 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <sys/mman.h>
 # include <pthread.h>
 # include <stddef.h>
+#include <limits.h>
 
 /*
 ** malloc private
@@ -68,6 +69,11 @@
 # define MALLOC_SMALL	1
 # define MALLOC_LARGE	2
 # define MALLOC_SIZE(x)	(((x) > ZONE_TINY) + ((x) > ZONE_SMALL))
+/*
+** MALLOC_MAX
+** is the default max malloc size (in case getrlimit fails)
+*/
+# define MALLOC_MAX		UINT_MAX
 
 typedef struct			s_malloc_chunk	t_malloc_chunk;
 typedef struct			s_malloc_mem	t_malloc_mem;

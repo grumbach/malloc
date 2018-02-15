@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 22:59:21 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/02/13 01:17:51 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/02/15 06:30:00 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,10 +84,10 @@ static inline int	is_not_in_chunks(const void *ptr, t_malloc_chunk *chunk)
 	while (chunk)
 	{
 		//if in chunk
-		if (ptr > (void*)chunk && \
-			ptr < (void*)chunk + sizeof(t_malloc_chunk) + chunk->size)
+		if (ptr >= (void*)chunk && \
+			ptr <= (void*)chunk + sizeof(t_malloc_chunk) + chunk->size)
 		{
-			if (chunk + 1 == ptr)
+			if ((void*)chunk + sizeof(t_malloc_chunk) == ptr)
 				return (0);//end OK
 			return (1);//end KO
 		}
@@ -111,8 +111,8 @@ int					malloc_out_of_zones(const void *ptr)
 		mem = i ? g_malloc_zones.small : g_malloc_zones.tiny;
 		while (mem)
 		{
-			if (ptr > (void*)mem && \
-				ptr < (void*)mem + MALLOC_ZONE * zone_sizes[i])
+			if (ptr >= (void*)mem && \
+				ptr <= (void*)mem + MALLOC_ZONE * zone_sizes[i])
 			{
 				if (!((pos = is_not_in_chunks(ptr, mem->alloc)) & 2))
 					return (pos);

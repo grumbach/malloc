@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 22:59:26 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/02/08 06:32:24 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/02/15 06:31:32 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,7 +153,7 @@ void				*malloc(size_t size)
 		{&malloc_tiny, &malloc_small, &malloc_large};
 	void			*ptr;
 
-	if (!size)
+	if (!size || size > MALLOC_MAX)
 		return (NULL);
 	pthread_mutex_lock(&g_malloc_mutex);
 
@@ -162,5 +162,16 @@ void				*malloc(size_t size)
 	ft_printf(" %s[%p]%s\n", "\e[33m", ptr, "\e[0m");//
 	#endif
 	pthread_mutex_unlock(&g_malloc_mutex);
+
+
+//	TESTING
+	size_t i = 0;
+	while (i < size)
+	{
+		((char*)ptr)[i] = 42;
+		i++;
+	}
+	ft_printf("VALID!");//
+//	TESTING
 	return (ptr);
 }

@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 22:59:29 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/02/13 04:58:45 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/02/15 06:29:49 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void				*realloc(void *ptr, size_t size)
 	if (is_reallocable(ptr - sizeof(t_malloc_chunk), size))
 	{
 		#ifdef MALLOC_DEBUG_VERBOSE
-		ft_printf("%s[SWEET]%s\n", "\e[35m", "\e[0m");//
+		ft_printf("%s[SWEET]%s\n", "\e[35m", "\e[0m");
 		#endif
 
 		((t_malloc_chunk *)(ptr - sizeof(t_malloc_chunk)))->size = size;
@@ -56,13 +56,13 @@ void				*realloc(void *ptr, size_t size)
 		return (ptr);
 	}
 	#ifdef MALLOC_DEBUG_VERBOSE
-	ft_printf("%s[BITTER]%s\n", "\e[35m", "\e[0m");//
+	ft_printf("%s[BITTER]%s\n", "\e[35m", "\e[0m");
 	#endif
 	pthread_mutex_unlock(&g_malloc_mutex);
 	new = malloc(size);
 	if (!new)
 		return (NULL);
-	ft_memcpy(new, ptr, size);
+	ft_memcpy(new, ptr, ((t_malloc_chunk *)(ptr - sizeof(t_malloc_chunk)))->size);
 	free(ptr);
 	return (new);
 }
