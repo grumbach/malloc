@@ -6,7 +6,7 @@
 #    By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/05/25 11:36:26 by agrumbac          #+#    #+#              #
-#    Updated: 2018/02/08 08:52:23 by agrumbac         ###   ########.fr        #
+#    Updated: 2018/02/15 06:51:43 by agrumbac         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -56,6 +56,7 @@ R = "\033[31m"
 G = "\033[32m"
 B = "\033[34m"
 C = "\033[36m"
+M = "\033[35m"
 KW = "\033[37;5m"
 KR = "\033[31;5m"
 KG = "\033[32;5m"
@@ -69,7 +70,8 @@ CUT = "\033[K"
 all: art ${NAME}
 	@echo ${G}Success"   "[${NAME}]${X}
 
-libft/libft.a:
+libft/%:
+	@[[ -d libft ]] || echo ${M}Cloning"   "[libft]...${X} && git clone https://github.com/grumbach/libft &>/dev/null
 	@make -C libft
 
 ${NAME}: ${HOSTLIB}
