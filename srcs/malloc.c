@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 22:59:26 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/02/15 07:17:58 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/02/16 20:03:00 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,7 +159,6 @@ void				*malloc(size_t size)
 		((char*)ptr)[i] = 42;
 		i++;
 	}
-	ft_printf("VALID!\n");//
 //	TESTING
 	return (ptr);
 }

@@ -6,11 +6,56 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/23 07:09:36 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/02/15 07:55:49 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/02/16 19:42:09 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
+
+static inline int	is_not_in_chunks(const void *ptr, t_malloc_chunk *chunk)
+{
+	while (chunk)
+	{
+		//if in chunk
+		if (ptr >= (void*)chunk && \
+			ptr <= (void*)chunk + sizeof(t_malloc_chunk) + chunk->size)
+		{
+			if ((void*)chunk + sizeof(t_malloc_chunk) == ptr)
+				return (0);//end OK
+			return (1);//end KO
+		}
+		chunk = chunk->next;
+	}
+	return (2);//continue
+}
+
+int					malloc_out_of_zones(const void *ptr)
+{
+	const size_t	zone_sizes[3] = {ZONE_TINY, ZONE_SMALL, 0};
+	t_malloc_mem	*mem;
+	int				pos;
+	int				i;
+
+	if (!((pos = is_not_in_chunks(ptr, g_malloc_zones.large)) & 2))
+		return (pos);
+	i = -1;
+	while (zone_sizes[++i])
+	{
+		mem = i ? g_malloc_zones.small : g_malloc_zones.tiny;
+		while (mem)
+		{
+			if (ptr >= (void*)mem && \
+				ptr <= (void*)mem + MALLOC_ZONE * zone_sizes[i])
+			{
+				if (!((pos = is_not_in_chunks(ptr, mem->alloc)) & 2))
+					return (pos);
+				return (1);
+			}
+			mem = mem->next;
+		}
+	}
+	return (1);
+}
 
 static inline void	show_alloc_tiny_small(t_malloc_mem *mem, size_t *total, \
 						const char *size_str)

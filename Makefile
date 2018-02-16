@@ -6,7 +6,7 @@
 #    By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/05/25 11:36:26 by agrumbac          #+#    #+#              #
-#    Updated: 2018/02/15 06:51:43 by agrumbac         ###   ########.fr        #
+#    Updated: 2018/02/16 20:38:13 by agrumbac         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -71,7 +71,7 @@ all: art ${NAME}
 	@echo ${G}Success"   "[${NAME}]${X}
 
 libft/%:
-	@[[ -d libft ]] || echo ${M}Cloning"   "[libft]...${X} && git clone https://github.com/grumbach/libft &>/dev/null
+	@[[ -d libft ]] || (echo ${M}Cloning"   "[libft]...${X} && git clone https://github.com/grumbach/libft &>/dev/null)
 	@make -C libft
 
 ${NAME}: ${HOSTLIB}
