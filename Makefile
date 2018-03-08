@@ -6,7 +6,7 @@
 #    By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/05/25 11:36:26 by agrumbac          #+#    #+#              #
-#    Updated: 2018/02/16 20:38:13 by agrumbac         ###   ########.fr        #
+#    Updated: 2018/03/08 20:28:16 by agrumbac         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,7 @@ NAME = libft_malloc.so
 
 HOSTLIB = libft_malloc_$(HOSTTYPE).so
 
-SRC = malloc.c free.c realloc.c show_alloc.c
+SRC = malloc.c free.c realloc.c show_alloc.c out_of_zones.c
 
 SRCDIR = srcs/
 

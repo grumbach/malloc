@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 19:59:11 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/02/16 20:43:52 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/03/08 20:37:10 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,6 @@
 # endif
 
 # ifdef MALLOC_DEBUG_VERBOSE
-// TODO env variable check
-// #  define MALLOC_VB_ENV				(getenv("42"))
-// #  define MALLOC_ULTRA_VERBOSE(...)	(MALLOC_VB_ENV ? ft_printf(__VA_ARGS__) : 0)
 #  define MALLOC_ULTRA_VERBOSE(...)	ft_printf(__VA_ARGS__)
 # endif
 

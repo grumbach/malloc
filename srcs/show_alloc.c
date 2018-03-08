@@ -6,61 +6,16 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/23 07:09:36 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/02/16 19:42:09 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/03/08 20:36:25 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 
-static inline int	is_not_in_chunks(const void *ptr, t_malloc_chunk *chunk)
+static inline void		show_alloc_tiny_small(t_malloc_mem *mem, \
+						size_t *total, const char *size_str)
 {
-	while (chunk)
-	{
-		//if in chunk
-		if (ptr >= (void*)chunk && \
-			ptr <= (void*)chunk + sizeof(t_malloc_chunk) + chunk->size)
-		{
-			if ((void*)chunk + sizeof(t_malloc_chunk) == ptr)
-				return (0);//end OK
-			return (1);//end KO
-		}
-		chunk = chunk->next;
-	}
-	return (2);//continue
-}
-
-int					malloc_out_of_zones(const void *ptr)
-{
-	const size_t	zone_sizes[3] = {ZONE_TINY, ZONE_SMALL, 0};
-	t_malloc_mem	*mem;
-	int				pos;
-	int				i;
-
-	if (!((pos = is_not_in_chunks(ptr, g_malloc_zones.large)) & 2))
-		return (pos);
-	i = -1;
-	while (zone_sizes[++i])
-	{
-		mem = i ? g_malloc_zones.small : g_malloc_zones.tiny;
-		while (mem)
-		{
-			if (ptr >= (void*)mem && \
-				ptr <= (void*)mem + MALLOC_ZONE * zone_sizes[i])
-			{
-				if (!((pos = is_not_in_chunks(ptr, mem->alloc)) & 2))
-					return (pos);
-				return (1);
-			}
-			mem = mem->next;
-		}
-	}
-	return (1);
-}
-
-static inline void	show_alloc_tiny_small(t_malloc_mem *mem, size_t *total, \
-						const char *size_str)
-{
-	t_malloc_chunk	*chunk;
+	t_malloc_chunk		*chunk;
 
 	while (mem)
 	{
@@ -78,7 +33,7 @@ static inline void	show_alloc_tiny_small(t_malloc_mem *mem, size_t *total, \
 	}
 }
 
-static inline void	show_alloc_large(size_t *total)
+static inline void		show_alloc_large(size_t *total)
 {
 	t_malloc_chunk	*chunk;
 
@@ -94,9 +49,9 @@ static inline void	show_alloc_large(size_t *total)
 	}
 }
 
-void				show_alloc_mem(void)
+void					show_alloc_mem(void)
 {
-	size_t			total;
+	size_t				total;
 
 	total = 0;
 	pthread_mutex_lock(&g_malloc_mutex);
@@ -110,19 +65,56 @@ void				show_alloc_mem(void)
 	pthread_mutex_unlock(&g_malloc_mutex);
 }
 
-void				show_alloc_mem_hex(void *ptr)
+static inline size_t	dump_line(const char *ptr, const size_t size)
 {
-	(void)ptr;
-	ft_printf("hello from show_alloc");
+	size_t				i;
+
+	ft_printf("%.16p: ", ptr);
+	i = 0;
+	while (i < 16)
+	{
+		if (!(i % 2))
+			ft_printf(" ");
+		if (size <= i)
+			ft_printf("  ");
+		if (size > i)
+			ft_printf("%02x", ptr[i]);
+		i++;
+	}
+	ft_printf("  ");
+	i = 0;
+	while (i < 16 && size > i)
+	{
+		if (ft_isprint(ptr[i]))
+			ft_printf("%c", ptr[i]);
+		else
+			ft_printf(".");
+		i++;
+	}
+	return (i);
 }
 
-/*
-** TINY : 0xA0000
-** 0xA0020 - 0xA004A : 42 bytes
-** 0xA006A - 0xA00BE : 84 bytes
-** SMALL : 0xAD000
-** 0xAD020 - 0xADEAD : 3725 bytes
-** LARGE : 0xB0000
-** 0xB0020 - 0xBBEEF : 48847 bytes
-** Total : 52698 bytes
-*/
+void					show_alloc_mem_hex(void *ptr)
+{
+	const char			*zone_str[3] = {"Tiny", "Small", "Large"};
+	size_t				size;
+	size_t				i;
+
+	pthread_mutex_lock(&g_malloc_mutex);
+	if (ptr && !malloc_out_of_zones(ptr))
+	{
+		size = ((t_malloc_chunk *)(ptr - sizeof(t_malloc_chunk)))->size;
+		ft_printf("%s memory area of %lu bytes starting at %p:\n", \
+			zone_str[MALLOC_SIZE(size)], size, ptr);
+		while (size)
+		{
+			i = dump_line(ptr, size);
+			size -= i;
+			ptr += i;
+			ft_printf("\n");
+		}
+	}
+	else
+		ft_printf("Memory address [%p] was not allocated by malloc\n", ptr);
+	pthread_mutex_unlock(&g_malloc_mutex);
+}
