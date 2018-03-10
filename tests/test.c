@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/15 05:01:34 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/03/08 20:26:39 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/03/10 22:15:59 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,10 @@
 
 int      main()
 {
-    char *a = "MALLOC_SIZE(size) returns # include <sys/mman.h> # include <pthread.h> # include <sys/resource.h> # include <errno.h>";
-
-    size_t  len = ft_strlen(a);
-    char    *ptr = malloc(len + 1);
-    ft_strncpy(ptr, a, len + 1);
-
-    show_alloc_mem_hex(ptr);
+    char    *ptr = malloc(42);
+    show_alloc_mem_minimap();
+    // ft_printf("\n\n");
+    // show_alloc_mem();
     free(ptr);
     return (0);
 }

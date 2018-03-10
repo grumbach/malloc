@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 19:59:11 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/03/08 20:37:10 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/03/10 23:51:16 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@
 ** chunk_size  == ZONE_(size) + sizeof(t_malloc_chunk)
 */
 # define ZONE_SMALL		(1024)
-# define ZONE_TINY		(128)
+# define ZONE_TINY		(64)
 # define MALLOC_ZONE	(128)
 
 /*
@@ -85,6 +85,12 @@
 ** is the default max malloc size (in case getrlimit fails)
 */
 # define MALLOC_MAX		UINT_MAX
+
+/*
+** MALLOC_MINIMAP
+** is the minimap ratio
+*/
+# define MALLOC_MINIMAP	64
 
 typedef struct				s_malloc_chunk
 {
@@ -125,5 +131,6 @@ void						*reallocf(void *ptr, size_t size);
 
 void						show_alloc_mem();
 void						show_alloc_mem_hex(void *ptr);
+void						show_alloc_mem_minimap();
 
 #endif

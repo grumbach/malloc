@@ -7,3 +7,4 @@ a.out
 libft_malloc*.so
 tests/malloc*
 tests/test/*
+test
