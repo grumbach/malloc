@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 22:59:21 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/02/18 17:34:16 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/03/11 22:23:21 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 static void			free_unused_mem(const int malloc_size, t_malloc_mem *mem)
 {
+	size_t const	zone_sizes[2] = {ZONE_TINY, ZONE_SMALL};
+
 	// remove form list
 	if (mem->prev)
 		mem->prev->next = mem->next;
@@ -23,11 +25,9 @@ static void			free_unused_mem(const int malloc_size, t_malloc_mem *mem)
 		g_malloc_zones.tiny = mem->next;
 	if (mem->next)
 		mem->next->prev = mem->prev;
-
 	MALLOC_ULTRA_VERBOSE("%s[MUNMAP %p of %lu]%s", "\e[31m", mem, \
-		MALLOC_ZONE * (malloc_size ? ZONE_SMALL : ZONE_TINY), "\e[0m");
-	// unmap tiny small
-	munmap(mem, MALLOC_ZONE * (malloc_size ? ZONE_SMALL : ZONE_TINY));
+		MALLOC_ZONE * zone_sizes[malloc_size], "\e[0m");
+	munmap(mem, MALLOC_ZONE * zone_sizes[malloc_size]);
 }
 
 static inline void	free_tiny_small(t_malloc_chunk *chunk, \
