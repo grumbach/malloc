@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/08 20:41:49 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/03/10 23:52:41 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/03/11 16:57:57 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,10 @@ static inline void	print_mem(const char *mem_state, const size_t size)
 		j = 0;
 		while (j < MALLOC_MINIMAP)
 		{
-			if (*(mem_state + i * MALLOC_MINIMAP + j) == '.')
-				ft_printf("%s%c%s", "\e[42;30m", ' ', "\e[0m");
+			if (*(mem_state + i * MALLOC_MINIMAP + j))
+				ft_printf("%s%c%s", "\e[41m", ' ', "\e[0m");
 			else
-				ft_printf("%s%c%s", "\e[41;34m", ' ', "\e[0m");
+				ft_printf("%s%c%s", "\e[42m", ' ', "\e[0m");
 			j++;
 		}
 		i++;
@@ -43,16 +43,15 @@ static void			draw_mem(t_malloc_mem *mem, const size_t size)
 	t_malloc_chunk	*chunk;
 	int				chunk_pos;
 
-	ft_printf("\n[Zone starting at %s%p%s of %s%lu%s bytes]",\
+	ft_printf("\n%s[Zone starting at %s%p%s of %s%lu%s bytes]", "\e[32m", \
 		"\e[33m", mem, "\e[32m", "\e[34m", size * MALLOC_ZONE, "\e[32m");
-	ft_memset(mem_state, '.', MALLOC_ZONE * MALLOC_MINIMAP);
-	mem_state[MALLOC_ZONE * MALLOC_MINIMAP] = '\0';
+	ft_bzero(mem_state, MALLOC_ZONE * MALLOC_MINIMAP + 1);
 	chunk = mem->alloc;
 	while (chunk)
 	{
 		chunk_pos = ((void*)chunk - ((void*)mem + sizeof(t_malloc_mem))) / \
 			(size + sizeof(t_malloc_chunk));
-		ft_memset((char*)mem_state + chunk_pos * MALLOC_MINIMAP, 'W', \
+		ft_memset((char*)mem_state + chunk_pos * MALLOC_MINIMAP, 42, \
 			chunk->size * MALLOC_MINIMAP / size);
 		chunk = chunk->next;
 	}
