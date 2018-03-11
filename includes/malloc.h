@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 19:59:11 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/03/10 23:51:16 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/03/11 19:25:16 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@
 ** chunk_size  == ZONE_(size) + sizeof(t_malloc_chunk)
 */
 # define ZONE_SMALL		(1024)
-# define ZONE_TINY		(64)
+# define ZONE_TINY		(128)
 # define MALLOC_ZONE	(128)
 
 /*

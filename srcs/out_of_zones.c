@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/08 20:27:33 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/03/08 20:27:56 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/03/11 17:41:32 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,16 @@ static inline int	is_not_in_chunks(const void *ptr, t_malloc_chunk *chunk)
 {
 	while (chunk)
 	{
-		//if in chunk
 		if (ptr >= (void*)chunk && \
 			ptr <= (void*)chunk + sizeof(t_malloc_chunk) + chunk->size)
 		{
 			if ((void*)chunk + sizeof(t_malloc_chunk) == ptr)
-				return (0);//end OK
-			return (1);//end KO
+				return (0);
+			return (1);
 		}
 		chunk = chunk->next;
 	}
-	return (2);//continue
+	return (2);
 }
 
 int					malloc_out_of_zones(const void *ptr)

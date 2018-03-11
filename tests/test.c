@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/15 05:01:34 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/03/10 22:15:59 by agrumbac         ###   ########.fr       */
+/*   Updated: 2018/03/10 23:58:40 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,11 @@
 int      main()
 {
     char    *ptr = malloc(42);
+    for (size_t i = 0; i < 1024; i++) {
+        ptr = malloc(i);
+        if (i %2)
+            free(ptr);
+    }
     show_alloc_mem_minimap();
     // ft_printf("\n\n");
     // show_alloc_mem();
