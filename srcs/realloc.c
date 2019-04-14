@@ -77,9 +77,13 @@ void				*reallocf(void *ptr, size_t size)
 void				*calloc(size_t count, size_t size)
 {
 	void			*ptr;
-
-	ptr = malloc(count * size);
+	size_t			actual_size;
+	
+	actual_size = count * size;
+	if (actual_size < size)
+		return (NULL);
+	ptr = malloc(actual_size);
 	if (ptr)
-		ft_bzero(ptr, count * size);
+		ft_bzero(ptr, actual_size);
 	return (ptr);
 }
