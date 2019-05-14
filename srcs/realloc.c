@@ -80,7 +80,7 @@ void				*calloc(size_t count, size_t size)
 	size_t			actual_size;
 	
 	actual_size = count * size;
-	if (actual_size < size)
+	if (count !=0 && actual_size / size != count)
 		return (NULL);
 	ptr = malloc(actual_size);
 	if (ptr)
